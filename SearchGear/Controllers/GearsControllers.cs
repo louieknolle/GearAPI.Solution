@@ -22,9 +22,37 @@ namespace SearchGear.Controllers
 
     // GET api/Gears
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Gear>>> Get()
+    public async Task<ActionResult<IEnumerable<Gear>>> Get(string brand, string family, string model, int maximumPrice, int price)
     {
-      return await _db.Gears.ToListAsync();
+      var query = _db.Gears.AsQueryable();
+
+      if (brand != null)
+      {
+        query = query.Where(entry => entry.Brand == brand);
+      }
+
+      if (family != null)
+      {
+        query = query.Where(entry => entry.Family == family);
+      }
+
+      if (model != null)
+      {
+        query = query.Where(entry => entry.Model == model);
+      }
+
+      if (maximumPrice > 0)
+      {
+        query = query.Where(entry => entry.Price <= maximumPrice);
+      }
+
+      if (price > 0)
+      {
+        query = query.Where(entry => entry.Price == price);
+      }
+
+
+      return await query.ToListAsync();
     }
 
     // GET: api/Gears/5
